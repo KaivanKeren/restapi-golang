@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 	"time"
 	"restapi-go/config"
 	"restapi-go/models"

@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 	"restapi-go/config"
-	"restapi-go/controllers"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -20,6 +19,10 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			// Ensure the signing method is as expected
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, http.ErrAbortHandler
+			}
 			return config.JwtSecret, nil
 		})
 		if err != nil || !token.Valid {
@@ -28,13 +31,18 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
-		if !ok || !token.Valid {
+		if !ok {
 			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
 			return
 		}
 
-		userID := int(claims["user_id"].(float64))
-		ctx := context.WithValue(r.Context(), "user_id", userID)
+		userID, ok := claims["user_id"].(float64)
+		if !ok {
+			http.Error(w, "User ID not found in token claims", http.StatusUnauthorized)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), "user_id", int(userID))
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

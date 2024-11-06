@@ -20,7 +20,7 @@ func RegisterRoutes() *chi.Mux {
 
 	// Auth Routes
 	router.Post("/login", controllers.Login)
-	router.Post("/logout", controllers.Logout)
+	router.With(middleware.AuthMiddleware).Post("/logout", controllers.Logout)
 
 	return router
 }

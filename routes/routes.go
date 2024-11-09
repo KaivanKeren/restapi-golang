@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"net/http"
 	"restapi-go/controllers"
 	"restapi-go/middleware"
 
@@ -21,6 +22,8 @@ func RegisterRoutes() *chi.Mux {
 	// Auth Routes
 	router.Post("/login", controllers.Login)
 	router.With(middleware.AuthMiddleware).Post("/logout", controllers.Logout)
+
+	http.ListenAndServe(":8080", middleware.CORSMiddleware(router))
 
 	return router
 }

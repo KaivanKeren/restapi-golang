@@ -1,0 +1,33 @@
+# Binaries for programs and plugins
+.env
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (for example, vendored packages)
+vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+cors.go
+
+# IDE and editor folders
+.idea/
+.vscode/
+**/Dockerfile*
+docker-compose.yml
+
+# Logs and debug files
+*.log
+
+# Misc
+.DS_Store
+Thumbs.db
